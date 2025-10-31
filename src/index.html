@@ -205,109 +205,6 @@ footer {
   font-style: italic;
 }
 
-/* Participants section (new / improved) */
-.activity-card .participants {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px dashed rgba(15, 23, 42, 0.06);
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-/* Title to the left */
-.activity-card .participants h3 {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #0f172a;
-  font-weight: 600;
-  flex: 0 0 auto;
-}
-
-/* Compact counter on the right when space allows */
-.activity-card .participants .participants-count {
-  margin-left: auto;
-  color: var(--muted);
-  font-size: 0.85rem;
-  background: rgba(15,23,42,0.03);
-  padding: 4px 8px;
-  border-radius: 999px;
-  border: 1px solid rgba(15,23,42,0.02);
-  flex: 0 0 auto;
-}
-
-/* List rendered as horizontal chips */
-.activity-card .participants-list {
-  margin: 8px 0 0 0;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  list-style: none;
-  flex-wrap: wrap;
-}
-
-/* Each participant chip */
-.activity-card .participants-list li {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(90deg, rgba(37,99,235,0.06), rgba(37,99,235,0.03));
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  color: #0b1220;
-  border: 1px solid rgba(37,99,235,0.08);
-  box-shadow: 0 1px 0 rgba(9,30,66,0.02);
-}
-
-/* Circular avatar placeholder inside chip */
-.activity-card .participants-list li .avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #ffffff 0%, #e6f0ff 100%);
-  display: inline-block;
-  flex: 0 0 28px;
-  text-align: center;
-  line-height: 28px;
-  font-size: 0.85rem;
-  color: #0a2540;
-  border: 1px solid rgba(9,30,66,0.06);
-  overflow: hidden;
-}
-
-/* Small name label (keeps chips compact) */
-.activity-card .participants-list li .name {
-  white-space: nowrap;
-  max-width: 10rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* No participants state */
-.activity-card .no-participants {
-  margin: 8px 0 0 0;
-  font-style: italic;
-  color: var(--muted);
-  padding: 6px 0;
-}
-
-/* Make the chips stack on very small screens */
-@media (max-width: 420px) {
-  .activity-card .participants {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .activity-card .participants .participants-count {
-    margin-left: 0;
-  }
-  .activity-card .participants-list li {
-    padding: 8px 12px;
-  }
-}
-
 /* Footer */
 .site-footer {
   text-align: center;
@@ -325,3 +222,41 @@ footer {
     padding: 0.9rem;
   }
 }
+
+<section class="activity-card card">
+  <h4>Yoga en plein air</h4>
+  <p>Une séance douce pour bien commencer la journée.</p>
+
+  <div class="participants">
+    <h3>Participants</h3>
+    <span class="participants-count">3 inscrits</span>
+
+    <ul class="participants-list">
+      <li>
+        <span class="avatar">AL</span>
+        <span class="name">Alice Martin</span>
+      </li>
+      <li>
+        <span class="avatar">BM</span>
+        <span class="name">Bruno Mayer</span>
+      </li>
+      <li>
+        <span class="avatar">CK</span>
+        <span class="name">Clara Kim</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- Exemple : pas de participants -->
+<section class="activity-card card">
+  <h4>Randonnée</h4>
+  <p>6 km autour du lac.</p>
+
+  <div class="participants">
+    <h3>Participants</h3>
+    <span class="participants-count">0 inscrit</span>
+
+    <p class="no-participants">Personne n'est encore inscrit — soyez le premier !</p>
+  </div>
+</section>
