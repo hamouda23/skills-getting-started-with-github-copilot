@@ -1,50 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mergington High School Activities</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header>
-      <h1>Mergington High School</h1>
-      <h2>Extracurricular Activities</h2>
-    </header>
+<!doctype html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Mergington High — Activités</title>
+	<link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+	<header class="site-header">
+		<h1>Mergington High — Activités extrascolaires</h1>
+		<p class="subtitle">Consultez les activités et voyez qui est déjà inscrit</p>
+	</header>
 
-    <main>
-      <section id="activities-container">
-        <h3>Available Activities</h3>
-        <div id="activities-list">
-          <!-- Activities will be loaded here -->
-          <p>Loading activities...</p>
-        </div>
-      </section>
+	<main class="container">
+		<section id="activities" class="grid">
+			<!-- Les cartes d'activités seront insérées ici par JavaScript -->
+		</section>
+	</main>
 
-      <section id="signup-container">
-        <h3>Sign Up for an Activity</h3>
-        <form id="signup-form">
-          <div class="form-group">
-            <label for="email">Student Email:</label>
-            <input type="email" id="email" required placeholder="your-email@mergington.edu" />
-          </div>
-          <div class="form-group">
-            <label for="activity">Select Activity:</label>
-            <select id="activity" required>
-              <option value="">-- Select an activity --</option>
-              <!-- Activity options will be loaded here -->
-            </select>
-          </div>
-          <button type="submit">Sign Up</button>
-        </form>
-        <div id="message" class="hidden"></div>
-      </section>
-    </main>
+	<footer class="site-footer">
+		<small>API fournie par /activities — Mergington High School</small>
+	</footer>
 
-    <footer>
-      <p>&copy; 2023 Mergington High School</p>
-    </footer>
+	<script>
+		// Récupère les activités et affiche des cartes jolies avec une section Participants
+		async function loadActivities() {
+			try {
+				const res = await fetch('/activities');
+				if (!res.ok) throw new Error('Impossible de charger les activités');
+				const activities = await res.json();
 
-    <script src="app.js"></script>
-  </body>
+				const container = document.getElementById('activities');
+				container.innerHTML = '';
+
+				Object.entries(activities).forEach(([name, activity]) => {
+					const card = document.createElement('article');
+					card.className = 'card';
+
+					card.innerHTML = `
+						<h2 class="card-title">${escapeHtml(name)}</h2>
+						<p class="muted">${escapeHtml(activity.description || '')}</p>
+						<div class="meta">
+							<span><strong>Horaires:</strong> ${escapeHtml(activity.schedule || '')}</span>
+							<span><strong>Places max:</strong> ${escapeHtml(String(activity.max_participants || ''))}</span>
+						</div>
+						<div class="participants">
+							<h3>Participants</h3>
+							${renderParticipants(activity.participants)}
+						</div>
+					`;
+					container.appendChild(card);
+				});
+			} catch (err) {
+				console.error(err);
+				document.getElementById('activities').innerHTML = '<p class="error">Erreur lors du chargement des activités.</p>';
+			}
+		}
+
+		// Échappe le HTML basique pour éviter l'injection
+		function escapeHtml(str) {
+			return String(str)
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/"/g, '&quot;')
+				.replace(/'/g, '&#039;');
+		}
+
+		// Rend la liste des participants sous forme de <ul>, ou un message s'il n'y en a pas
+		function renderParticipants(list) {
+			if (!Array.isArray(list) || list.length === 0) {
+				return '<p class="no-participants">Aucun participant pour l\'instant.</p>';
+			}
+			const items = list.map(email => `<li>${escapeHtml(email)}</li>`).join('');
+			return `<ul class="participants-list">${items}</ul>`;
+		}
+
+		window.addEventListener('DOMContentLoaded', loadActivities);
+	</script>
+</body>
 </html>
