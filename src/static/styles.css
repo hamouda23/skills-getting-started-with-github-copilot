@@ -192,12 +192,26 @@ footer {
 .participants-list {
   margin: 0 0 0.2rem 1rem;
   padding: 0;
-  list-style: disc;
+  list-style: none;
   color: #0b1220;
 }
 .participants-list li {
   margin: 0.18rem 0;
   font-size: 0.93rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+.delete-participant {
+  background: none;
+  border: none;
+  padding: 0 0.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.delete-participant svg {
+  vertical-align: middle;
+}
 }
 .no-participants {
   margin: 0;
