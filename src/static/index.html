@@ -1,82 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
-	<title>Mergington High — Activités</title>
-	<link rel="stylesheet" href="/static/styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mergington High School - Activités</title>
+    <style>
+        .activity-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+        .participants-list {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-	<header class="site-header">
-		<h1>Mergington High — Activités extrascolaires</h1>
-		<p class="subtitle">Consultez les activités et voyez qui est déjà inscrit</p>
-	</header>
+    <h1>Activités Extrascolaires</h1>
+    <div id="activities-container"></div>
 
-	<main class="container">
-		<section id="activities" class="grid">
-			<!-- Les cartes d'activités seront insérées ici par JavaScript -->
-		</section>
-	</main>
+    <script>
+        async function loadActivities() {
+            try {
+                const response = await fetch('/activities');
+                const activities = await response.json();
+                const container = document.getElementById('activities-container');
+                
+                for (const [name, activity] of Object.entries(activities)) {
+                    const card = document.createElement('div');
+                    card.className = 'activity-card';
+                    card.innerHTML = `
+                        <h2>${name}</h2>
+                        <p>${activity.description}</p>
+                        <p><strong>Horaire:</strong> ${activity.schedule}</p>
+                        <p><strong>Places maximales:</strong> ${activity.max_participants}</p>
+                        <div class="participants-list">
+                            <h3>Participants:</h3>
+                            <ul>
+                                ${activity.participants.map(p => `<li>${p}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement des activités:', error);
+            }
+        }
 
-	<footer class="site-footer">
-		<small>API fournie par /activities — Mergington High School</small>
-	</footer>
-
-	<script>
-		// Récupère les activités et affiche des cartes jolies avec une section Participants
-		async function loadActivities() {
-			try {
-				const res = await fetch('/activities');
-				if (!res.ok) throw new Error('Impossible de charger les activités');
-				const activities = await res.json();
-
-				const container = document.getElementById('activities');
-				container.innerHTML = '';
-
-				Object.entries(activities).forEach(([name, activity]) => {
-					const card = document.createElement('article');
-					card.className = 'card';
-
-					card.innerHTML = `
-						<h2 class="card-title">${escapeHtml(name)}</h2>
-						<p class="muted">${escapeHtml(activity.description || '')}</p>
-						<div class="meta">
-							<span><strong>Horaires:</strong> ${escapeHtml(activity.schedule || '')}</span>
-							<span><strong>Places max:</strong> ${escapeHtml(String(activity.max_participants || ''))}</span>
-						</div>
-						<div class="participants">
-							<h3>Participants</h3>
-							${renderParticipants(activity.participants)}
-						</div>
-					`;
-					container.appendChild(card);
-				});
-			} catch (err) {
-				console.error(err);
-				document.getElementById('activities').innerHTML = '<p class="error">Erreur lors du chargement des activités.</p>';
-			}
-		}
-
-		// Échappe le HTML basique pour éviter l'injection
-		function escapeHtml(str) {
-			return String(str)
-				.replace(/&/g, '&amp;')
-				.replace(/</g, '&lt;')
-				.replace(/>/g, '&gt;')
-				.replace(/"/g, '&quot;')
-				.replace(/'/g, '&#039;');
-		}
-
-		// Rend la liste des participants sous forme de <ul>, ou un message s'il n'y en a pas
-		function renderParticipants(list) {
-			if (!Array.isArray(list) || list.length === 0) {
-				return '<p class="no-participants">Aucun participant pour l\'instant.</p>';
-			}
-			const items = list.map(email => `<li>${escapeHtml(email)}</li>`).join('');
-			return `<ul class="participants-list">${items}</ul>`;
-		}
-
-		window.addEventListener('DOMContentLoaded', loadActivities);
-	</script>
+        document.addEventListener('DOMContentLoaded', loadActivities);
+    </script>
 </body>
 </html>
